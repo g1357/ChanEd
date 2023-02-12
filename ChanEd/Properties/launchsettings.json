@@ -1,0 +1,10 @@
+﻿{
+    "profiles": {
+      "ChanEd (Package)": {
+        "commandName": "MsixPackage"
+      },
+      "ChanEd (Unpackaged)": {
+        "commandName": "Project"
+      }
+    }
+}

@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <OutputPath>..\Debug\</OutputPath>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ChanSort.Api\ChanSort.Api.csproj" />
+    <ProjectReference Include="..\ChanSort.Loader.Panasonic\ChanSort.Loader.Panasonic.csproj" />
+    <ProjectReference Include="..\Test.Loader\Test.Loader.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MSTest.TestAdapter" Version="3.0.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.0.2" />
+  </ItemGroup>
+  <Import Project="..\packages\NETStandard.Library.2.0.3\build\net48\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.3\build\net48\NETStandard.Library.targets')" />
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <PostBuildEvent>
+      $(MSBuildProjectDirectory)\..\deployLibs.cmd $(TargetDir)
+</PostBuildEvent>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+</Project>
