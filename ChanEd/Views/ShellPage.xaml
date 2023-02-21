@@ -29,9 +29,9 @@
                 https://docs.microsoft.com/windows/uwp/app-resources/localize-strings-ui-manifest#refer-to-a-string-resource-identifier-from-xaml
                 -->
                 <MenuBarItem x:Uid="ShellMenuBarItem_File">
+                    <MenuFlyoutItem x:Uid="ShellMenuItem_File_Open" Command="{x:Bind ViewModel.MenuFileOpenCommand}" />
                     <MenuFlyoutItem x:Uid="ShellMenuItem_File_Exit" d:Text="Exit"
                                     Command="{x:Bind ViewModel.MenuFileExitCommand}" />
-                    <MenuFlyoutItem x:Uid="ShellMenuItem_File_Open" Command="{x:Bind ViewModel.MenuFileOpenCommand}" />
                 </MenuBarItem>
                 <MenuBarItem x:Uid="ShellMenuBarItem_Views">
                     <MenuBarItem.Items>

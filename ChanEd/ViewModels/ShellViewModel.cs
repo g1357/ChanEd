@@ -6,12 +6,13 @@ using ChanEd.Core;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-//using Microsoft.Maui.Storage;
-
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Windows.Storage;
+using Windows.Storage.Pickers;
+using Windows.UI.Popups;
 
 namespace ChanEd.ViewModels;
 
@@ -22,35 +23,17 @@ public class ShellViewModel : ObservableRecipient
     public ICommand MenuFileExitCommand { get; }
     public ICommand MenuFileOpenCommand { get; }
 
-    public ICommand MenuSettingsCommand
-    {
-        get;
-    }
+    public ICommand MenuSettingsCommand { get; }
 
-    public ICommand MenuViewsDataGridCommand
-    {
-        get;
-    }
+    public ICommand MenuViewsDataGridCommand { get; }
 
-    public ICommand MenuViewsContentGridCommand
-    {
-        get;
-    }
+    public ICommand MenuViewsContentGridCommand { get; }
 
-    public ICommand MenuViewsListDetailsCommand
-    {
-        get;
-    }
+    public ICommand MenuViewsListDetailsCommand { get; }
 
-    public ICommand MenuViewsMainCommand
-    {
-        get;
-    }
+    public ICommand MenuViewsMainCommand { get; }
 
-    public INavigationService NavigationService
-    {
-        get;
-    }
+    public INavigationService NavigationService { get; }
 
     public bool IsBackEnabled
     {
@@ -64,7 +47,9 @@ public class ShellViewModel : ObservableRecipient
         NavigationService.Navigated += OnNavigated;
 
         MenuFileExitCommand = new RelayCommand(OnMenuFileExit);
-        MenuFileOpenCommand = new RelayCommand(OnMenuFileOpen);
+        MenuFileOpenCommand = new RelayCommand(async () =>
+            await OnMenuFileOpen()
+        );
         MenuSettingsCommand = new RelayCommand(OnMenuSettings);
         MenuViewsDataGridCommand = new RelayCommand(OnMenuViewsDataGrid);
         MenuViewsContentGridCommand = new RelayCommand(OnMenuViewsContentGrid);
@@ -75,29 +60,50 @@ public class ShellViewModel : ObservableRecipient
     private void OnNavigated(object sender, NavigationEventArgs e) => IsBackEnabled = NavigationService.CanGoBack;
 
     private void OnMenuFileExit() => Application.Current.Exit();
-    private void OnMenuFileOpen()
+    private async Task OnMenuFileOpen()
     {
-        /*
         try
         {
-            var result = await FilePicker.Default.PickAsync(options);
-            if (result != null)
-            {
-                if (result.FileName.EndsWith("jpg", StringComparison.OrdinalIgnoreCase) ||
-                    result.FileName.EndsWith("png", StringComparison.OrdinalIgnoreCase))
-                {
-                    using var stream = await result.OpenReadAsync();
-                    var image = ImageSource.FromStream(() => stream);
-                }
-            }
 
-            return result;
+            var openPicker = new FileOpenPicker();
+
+            // Retrieve the window handle (HWND) of the current WinUI 3 window.
+            var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+
+            // Initialize the file picker with the window handle (HWND).
+            WinRT.Interop.InitializeWithWindow.Initialize(openPicker, hWnd);
+
+            openPicker.ViewMode = PickerViewMode.Thumbnail;
+            openPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+            openPicker.FileTypeFilter.Add(".jpg");
+            openPicker.FileTypeFilter.Add(".jpeg");
+            openPicker.FileTypeFilter.Add(".png");
+            StorageFile file = await openPicker.PickSingleFileAsync();
+            if (file != null)
+            {
+                var msgDialog = new MessageDialog($"Вбран файл: {file.Name}.", "Выбор файла для открытия");
+
+                // Initialize the file picker with the window handle (HWND).
+                WinRT.Interop.InitializeWithWindow.Initialize(msgDialog, hWnd);
+                var result = await msgDialog.ShowAsync();
+            }
+            else
+            {
+                var msgDialog = new MessageDialog(@"Файл не выбран.", "Выбор файла для открытия");
+                // Initialize the file picker with the window handle (HWND).
+                WinRT.Interop.InitializeWithWindow.Initialize(msgDialog, hWnd);
+                var result = await msgDialog.ShowAsync();
+            }
         }
-        catch (Exception ex)
-        {
-            // The user canceled or something went wrong
+         catch (Exception ex)
+         {
+            var msgDialog = new MessageDialog($"Ошибка при выборе файла: {ex.Message}.", "Выбор файла для открытия");
+            // Retrieve the window handle (HWND) of the current WinUI 3 window.
+            var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+            // Initialize the file picker with the window handle (HWND).
+            WinRT.Interop.InitializeWithWindow.Initialize(msgDialog, hWnd);
+            var result = await msgDialog.ShowAsync();
         }
-        */
     }
 
     private void OnMenuSettings() => NavigationService.NavigateTo(typeof(SettingsViewModel).FullName!);

@@ -44,5 +44,6 @@ public class DataGridViewModel : ObservableRecipient, INavigationAware
 
     public void OnNavigatedFrom()
     {
+
     }
 }
