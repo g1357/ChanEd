@@ -32,6 +32,7 @@ public class ShellViewModel : ObservableRecipient
     public ICommand MenuViewsListDetailsCommand { get; }
 
     public ICommand MenuViewsMainCommand { get; }
+    public ICommand MenuViewsOpenCommand { get; }
 
     public INavigationService NavigationService { get; }
 
@@ -55,6 +56,7 @@ public class ShellViewModel : ObservableRecipient
         MenuViewsContentGridCommand = new RelayCommand(OnMenuViewsContentGrid);
         MenuViewsListDetailsCommand = new RelayCommand(OnMenuViewsListDetails);
         MenuViewsMainCommand = new RelayCommand(OnMenuViewsMain);
+        MenuViewsOpenCommand = new RelayCommand(OnMenuViewsOpen);
     }
 
     private void OnNavigated(object sender, NavigationEventArgs e) => IsBackEnabled = NavigationService.CanGoBack;
@@ -78,6 +80,7 @@ public class ShellViewModel : ObservableRecipient
             openPicker.FileTypeFilter.Add(".jpg");
             openPicker.FileTypeFilter.Add(".jpeg");
             openPicker.FileTypeFilter.Add(".png");
+            openPicker.FileTypeFilter.Add(".doc");
             StorageFile file = await openPicker.PickSingleFileAsync();
             if (file != null)
             {
@@ -115,4 +118,63 @@ public class ShellViewModel : ObservableRecipient
     private void OnMenuViewsListDetails() => NavigationService.NavigateTo(typeof(ListDetailsViewModel).FullName!);
 
     private void OnMenuViewsMain() => NavigationService.NavigateTo(typeof(MainViewModel).FullName!);
+    private async void OnMenuViewsOpen() => await ShowOpenFileDialog2();
+
+    public async Task ShowOpenFileDialog2()
+    {
+        var lib = new ChanSortLib();
+        var filter = lib.GetTvDataFileFilter(out var supportedExtensions, out var numberOfFilters);
+        try
+        {
+            var openPicker = new FileOpenPicker();
+
+            // Retrieve the window handle (HWND) of the current WinUI 3 window.
+            var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+
+            // Initialize the file picker with the window handle (HWND).
+            WinRT.Interop.InitializeWithWindow.Initialize(openPicker, hWnd);
+            openPicker.FileTypeFilter.Add("*");
+            openPicker.FileTypeFilter.Add(".docx");
+            openPicker.FileTypeFilter.Add(".xlsx");
+            /*
+              openPicker.ViewMode = PickerViewMode.Thumbnail;
+              openPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+              openPicker.FileTypeFilter.Add(".jpg");
+              openPicker.FileTypeFilter.Add(".jpeg");
+              openPicker.FileTypeFilter.Add(".png");
+              openPicker.FileTypeFilter.Add(".doc");
+              */
+            StorageFile file = await openPicker.PickSingleFileAsync();
+/*
+            // using var dlg = new OpenFileDialog();
+            var dlg = new FileOpenPicker();
+
+            // Retrieve the window handle (HWND) of the current WinUI 3 window.
+            var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+            // Initialize the file picker with the window handle (HWND).
+            WinRT.Interop.InitializeWithWindow.Initialize(dlg, hWnd);
+
+            //var lastFile = this.lastOpenedFile ?? (this.mruFiles.Count > 0 ? this.mruFiles[0] : null);
+            //dlg.SuggestedStartLocation = lastFile != null ? Path.GetDirectoryName(this.lastOpenedFile) : Environment.GetFolderPath(Environment.SpecialFolder.MyComputer);
+            //lg.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+            //dlg.FileTypeFilter.Concat(filter.Split("|").ToList());
+            var file = await dlg.PickSingleFileAsync();
+*/
+            if (file == null)
+                return;
+            //var plugin = dlg.FilterIndex <= this.Plugins.Count ? this.Plugins[dlg.FilterIndex - 1] : null;
+            //LoadFiles(plugin, file.Path);
+        }
+        catch (Exception ex)
+        {
+            var msgDialog = new MessageDialog($"Ошибка при выборе файла: {ex.Message}.", "Выбор файла для открытия");
+            // Retrieve the window handle (HWND) of the current WinUI 3 window.
+            var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow);
+            // Initialize the file picker with the window handle (HWND).
+            WinRT.Interop.InitializeWithWindow.Initialize(msgDialog, hWnd);
+            var result = await msgDialog.ShowAsync();
+        }
+
+    }
+
 }

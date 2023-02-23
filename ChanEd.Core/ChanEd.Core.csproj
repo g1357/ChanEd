@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net6.0-windows10.0.22621.0</TargetFramework>
     <RootNamespace>ChanEd.Core</RootNamespace>
     <Platforms>AnyCPU;x64;x86</Platforms>
     <Platforms>x86;x64;arm64;AnyCPU</Platforms>
@@ -13,5 +13,9 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ChanSort.Api\ChanSort.Api.csproj" />
   </ItemGroup>
 </Project>

@@ -9,6 +9,9 @@ public class MainViewModel : ObservableRecipient
 {
     public MainViewModel()
     {
+        var lib = new ChanSortLib();
+        lib.ShowOpenFileDialog();
+
         const string fileName = @"c:\\temp\\channels.dat";
         List<SatChannelModel> list = new List<SatChannelModel>();
         SatChannelModel channel;

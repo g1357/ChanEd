@@ -39,6 +39,7 @@
                         <MenuFlyoutItem x:Uid="ShellMenuItem_Views_ListDetails" Command="{x:Bind ViewModel.MenuViewsListDetailsCommand}" />
                         <MenuFlyoutItem x:Uid="ShellMenuItem_Views_ContentGrid" Command="{x:Bind ViewModel.MenuViewsContentGridCommand}" />
                         <MenuFlyoutItem x:Uid="ShellMenuItem_Views_DataGrid" Command="{x:Bind ViewModel.MenuViewsDataGridCommand}" />
+                        <MenuFlyoutItem x:Uid="ShellMenuItem_Views_DataGrid" Command="{x:Bind ViewModel.MenuViewsOpenCommand}" />
                     </MenuBarItem.Items>
                 </MenuBarItem>
             </MenuBar>
